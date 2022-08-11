@@ -4,12 +4,20 @@ import { trpc } from "../utils/trpc";
 import { useSession, signIn, signOut } from "next-auth/react";
 import LoginButton from "../components/auth/LoginButton";
 import { useEffect } from "react";
+import { object } from "zod";
 
-const Home: NextPage = () => {  
-  const { data, isLoading } = trpc.useQuery([
-    "example.hello",
-    { text: "from tRPC" },
-  ]);
+const queryOptions = {
+  retry: false,
+};
+
+const Home: NextPage = () => {
+  const { data: session } = useSession();
+  const { data, isLoading, error } = trpc.useQuery(
+    ["question.hello", { text: "from tRPC" }],
+    queryOptions
+  );
+  const sesion = trpc.useQuery(["question.getSession"], queryOptions);
+  const secret = trpc.useQuery(["question.getSecretMessage"], queryOptions);
 
   return (
     <>
@@ -25,9 +33,15 @@ const Home: NextPage = () => {
           Create <span>T3</span> App
         </h1>
 
-        <div>
-          <div>{data ? <p>{data.greeting}</p> : <p>Loading..</p>}</div>
-        </div>
+        {error ? (
+          <div>Error: {error.message}</div>
+        ) : (
+          <div>
+            <div>{data ? <p>{data.greeting}</p> : <p>Loading..</p>}</div>
+            <p>{JSON.stringify(sesion)}</p>
+            <p>{secret.data}</p>
+          </div>
+        )}
       </div>
     </>
   );
