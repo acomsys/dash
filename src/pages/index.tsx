@@ -1,8 +1,11 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { trpc } from "../utils/trpc";
+import { useSession, signIn, signOut } from "next-auth/react";
+import LoginButton from "../components/auth/LoginButton";
+import { useEffect } from "react";
 
-const Home: NextPage = () => {
+const Home: NextPage = () => {  
   const { data, isLoading } = trpc.useQuery([
     "example.hello",
     { text: "from tRPC" },
@@ -16,34 +19,13 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div>
+        <LoginButton />
+
         <h1>
           Create <span>T3</span> App
         </h1>
 
         <div>
-          <h3>This stack uses:</h3>
-          <ul>
-            <li>
-              <a href="https://nextjs.org" target="_blank" rel="noreferrer">
-                Next.js
-              </a>
-            </li>
-            <li>
-              <a href="https://trpc.io" target="_blank" rel="noreferrer">
-                tRPC
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://typescriptlang.org"
-                target="_blank"
-                rel="noreferrer"
-              >
-                TypeScript
-              </a>
-            </li>
-          </ul>
-
           <div>{data ? <p>{data.greeting}</p> : <p>Loading..</p>}</div>
         </div>
       </div>
