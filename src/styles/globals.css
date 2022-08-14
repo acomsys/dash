@@ -1,16 +1,34 @@
+@import "../../node_modules/@syncfusion/ej2-base/styles/material.css";
+@import "../../node_modules/@syncfusion/ej2-react-navigations/styles/material.css";
+@import "../../node_modules/@syncfusion/ej2-inputs/styles/material.css";
+@import "../../node_modules/@syncfusion/ej2-buttons/styles/material.css";
+
+:root {
+    --dash-font-family: -apple-system, "BlinkMacSystemFont", "Segoe UI", "Helvetica", "Apple Color Emoji", "Arial", sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+    --dash-grey: #2a2e34;
+    --dash-dark-grey: #53575e;
+    --dash-white: #f6f7f9;
+    --dash-light-grey: #7c828d;
+    --dash-dark-pink: #ff00fc;
+    --dash-light-pink: rgba(255, 0, 255, 0.08);
+
+    --selected-highlight: var(--dash-light-pink);
+    --button-icon-idle: var(--dash-light-grey);
+    --button-icon-focused: var(--dash-dark-pink);
+}
+
 html,
 body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    background-color: var(--dash-white);
+    color: var(--dash-grey);
+    font-family: var(--dash-font-family);
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
+#__next {
+    height: 100%;
+    width: 100%;
 }

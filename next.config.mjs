@@ -1,3 +1,4 @@
+import { truncate } from "fs/promises";
 import { env } from "./src/env/server.mjs";
 
 /**
@@ -15,4 +16,7 @@ function defineNextConfig(config) {
 export default defineNextConfig({
   reactStrictMode: true,
   swcMinify: true,
+  compiler: {
+    styledComponents: true,
+  },
 });

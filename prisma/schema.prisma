@@ -40,8 +40,8 @@ model Account {
 model Session {
     id           String   @id @default(cuid())
     sessionToken String   @unique @map("session_token") @db.VarChar(191)
-    userId       String   @map("user_id") @db.VarChar(191)
     expires      DateTime
+    userId       String   @map("user_id") @db.VarChar(191)
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@map("session")

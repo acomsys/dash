@@ -1,29 +1,55 @@
 // src/pages/_app.tsx
 import { withTRPC } from "@trpc/next";
+import type { ReactElement, ReactNode } from "react";
+import { ThemeProvider } from "styled-components";
 import type { AppRouter } from "../server/router";
-import type { AppType } from "next/dist/shared/lib/utils";
+import type { NextPage } from "next";
+import type { AppProps } from "next/app";
 import superjson from "superjson";
 import { SessionProvider } from "next-auth/react";
 import "../styles/globals.css";
+import { registerLicense } from "@syncfusion/ej2-base";
+import { env } from "../env/client.mjs";
+import { Provider, useCreateStore } from "../store/dash-store";
 
-const MyApp: AppType = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}) => {
-  return (
-    <SessionProvider session={session}>
-      <Component {...pageProps} />
-    </SessionProvider>
-  );
+registerLicense(env.NEXT_PUBLIC_SYNCFUSION_LICENSE_KEY);
+
+export type NextPageWithLayout = NextPage & {
+  getLayout?: (page: ReactElement) => ReactNode;
 };
 
-const getBaseUrl = () => {
-  if (typeof window !== "undefined") {
-    return "";
-  }
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`; // SSR should use vercel url
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
 
-  return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
+interface ThemeInterface {
+  colors: {
+    primary: string;
+  };
+}
+
+const theme: ThemeInterface = {
+  colors: {
+    primary: "#0070f3",
+  },
+};
+
+const MyApp = ({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppPropsWithLayout) => {
+  const createStore = useCreateStore(pageProps.initialZustandState);
+  const getLayout = Component.getLayout || ((page) => page);
+
+  return (
+    <Provider createStore={createStore}>
+      <SessionProvider session={session}>
+        <ThemeProvider theme={theme}>
+          {getLayout(<Component {...pageProps} />)}
+        </ThemeProvider>
+      </SessionProvider>
+    </Provider>
+  );
 };
 
 export default withTRPC<AppRouter>({
@@ -32,7 +58,7 @@ export default withTRPC<AppRouter>({
      * If you want to use SSR, you need to use the server's full URL
      * @link https://trpc.io/docs/ssr
      */
-    const url = `${getBaseUrl()}/api/trpc`;
+    const url = `${env.NEXT_PUBLIC_BASE_URL}/api/trpc`;
 
     return {
       url,
