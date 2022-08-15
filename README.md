@@ -1,5 +1,44 @@
-# Create T3 App
+# Learnings
 
+1. For optimization purposes, always ensure that useStore queries are as atomic as possible.
+
+   Use this:
+
+   ```js
+   const count = useDashStore((s) => s.count); // 🙅‍♂️
+   ```
+
+   Not this:
+
+   ```js
+   const { count } = useDashStore((s) => s); // 👍
+   ```
+
+1. Do not have a component that queries too many things. A change in any of those things will cause the entire component to re-render.
+
+   ```js
+   const DashboardLayout = ({ children }: React.PropsWithChildren<{}>) => {
+      // 🙅‍♂️ move this to a component dedicated to displaying counter
+      const count = useDashStore((s) => s.count);
+
+      // 🙅‍♂️ move this to a component dedicated to displaying list of spaces
+      const spaces = useDashStore((s) => s.dash.spaces);
+
+      // 👍 actions are fine since they don't change often
+      const { push } = useSpaceService();
+      const { increment, decrement } = useDashStore((store) => ({
+         increment: store.increment,
+         decrement: store.decrement,
+      }));
+      // ...
+   ```
+
+1. Break apart components that have many queries in to many smaller components with each of the smaller components querying specific things from the store.
+1. For testability always make a stateless and stateful versions of a component. The stateful version simply invoking the stateless version.
+1. Subscribe to the store from the stateful version and pass the state to the stateless version.
+1. Implement tests using the stateless versions of the components.
+
+# Create T3 App
 
 This is an app bootstrapped according to the [init.tips](https://init.tips) stack, also known as the T3-Stack.
 
