@@ -1,16 +1,17 @@
 import type { ReactElement } from "react";
 import { NextPageWithLayout } from "../_app";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import { useDashStoreShallow } from "../../store/dash-store-shallow-hook";
+import { useDashStore } from "../../store/dash-store";
 
 const Dashboard: NextPageWithLayout = () => {
-  const dashStore = useDashStoreShallow();
+  const dash = useDashStore((s) => s.dash);
+  const increment = useDashStore((s) => s.increment);
 
   return (
     <div>
       <span>Hello world</span>
-      <button onClick={dashStore.increment}>Click</button>
-      {dashStore.dash.spaces.map((space) => {
+      <button onClick={increment}>Click</button>
+      {dash.spaces.map((space) => {
         return <div key={space.id}>{space.text}</div>;
       })}
     </div>
