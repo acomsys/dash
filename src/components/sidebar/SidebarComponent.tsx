@@ -26,25 +26,8 @@ const favorites = () => (
   </div>
 );
 
-const SidebarAccordionComponent: React.FC<SidebarAccordionProps> = ({
-  nodes,
-  parent,
-  onExpand,
-  onCollapse,
-  onSelect,
-  onMore,
-  onAdd,
-}: SidebarAccordionProps) => {
-  const projectTree = () => (
-    <TreeComponent
-      nodes={nodes}
-      onExpand={onExpand}
-      onCollapse={onCollapse}
-      onSelect={onSelect}
-      onMore={onMore}
-      onAdd={onAdd}
-    />
-  );
+const SidebarAccordionComponent: React.FC<SidebarAccordionProps> = (props) => {
+  const projectTree = () => <TreeComponent {...props} />;
 
   return (
     <SidebardAccordionStyle>

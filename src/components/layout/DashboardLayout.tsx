@@ -1,34 +1,42 @@
 import SidebarAccordionComponent from "../../components/sidebar/SidebarComponent";
-import { useDashStoreShallow } from "../../store/dash-store-shallow-hook";
 import { TreeNode } from "../../models/TreeNode";
 import styled from "styled-components";
+import _ from "lodash";
+import { useDashStore } from "../../store/dash-store";
+import { useSpaceService } from "../../services/useSpaceService";
 
 const DashboardLayout = ({ children }: React.PropsWithChildren<{}>) => {
-  const dashStore = useDashStoreShallow();
+  const count = useDashStore((s) => s.count);
+  const spaces = useDashStore((s) => s.dash.spaces);
+  const { push } = useSpaceService();
+  const { increment, decrement } = useDashStore((store) => ({
+    increment: store.increment,
+    decrement: store.decrement,
+  }));
 
   const onExpand = (node: TreeNode) => {
-    dashStore.decrement();
+    increment();
   };
   const onSelect = (node: TreeNode) => {
-    dashStore.decrement();
+    increment();
   };
   const onMore = (node: TreeNode) => {
-    dashStore.decrement();
+    decrement();
   };
   const onAdd = (node: TreeNode) => {
-    dashStore.pushSpace.mutate({ text: "some" });
+    push.mutate({ text: "some" });
   };
   const onCollapse = (node: TreeNode) => {
-    dashStore.decrement();
+    decrement();
   };
 
   return (
     <StyledDashboard>
       <div className="sb">
-        <div className="sb-header">Dash {dashStore.count}</div>
-        {dashStore.dash ? (
+        <div className="sb-header">Dash {count}</div>
+        {spaces ? (
           <SidebarAccordionComponent
-            nodes={dashStore.dash.spaces}
+            nodes={spaces}
             onExpand={onExpand}
             onCollapse={onCollapse}
             onSelect={onSelect}

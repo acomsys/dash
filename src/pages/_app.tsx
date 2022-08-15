@@ -5,6 +5,8 @@ import { ThemeProvider } from "styled-components";
 import type { AppRouter } from "../server/router";
 import type { NextPage } from "next";
 import type { AppProps } from "next/app";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import superjson from "superjson";
 import { SessionProvider } from "next-auth/react";
 import "../styles/globals.css";
@@ -45,7 +47,9 @@ const MyApp = ({
     <Provider createStore={createStore}>
       <SessionProvider session={session}>
         <ThemeProvider theme={theme}>
-          {getLayout(<Component {...pageProps} />)}
+          <DndProvider backend={HTML5Backend}>
+            {getLayout(<Component {...pageProps} />)}
+          </DndProvider>
         </ThemeProvider>
       </SessionProvider>
     </Provider>

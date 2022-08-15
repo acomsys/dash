@@ -1,25 +1,31 @@
 import { TreeNode } from "../../models/TreeNode";
+import { useDragDropManager } from "react-dnd";
+import { useEffect, useState } from "react";
 import SubTreeComponent from "./SubTreeComponent";
 
-const TreeComponent: React.FC<TreeProps> = ({
-  nodes,
-  onExpand,
-  onCollapse,
-  onSelect,
-  onMore,
-  onAdd,
-}: TreeProps) => {
+const TreeComponent: React.FC<TreeProps> = (props: TreeProps) => {
+  const [dragging, setDragging] = useState(false);
+
+  const dragDropManager = useDragDropManager();
+  const monitor = dragDropManager.getMonitor();
+
+  useEffect(
+    () =>
+      monitor.subscribeToStateChange(() => {
+        setDragging(monitor.isDragging() === true);
+      }),
+    [monitor]
+  );
+
   return (
-    <SubTreeComponent
-      nodes={nodes}
-      parent={undefined}
-      level={0}
-      onExpand={onExpand}
-      onCollapse={onCollapse}
-      onSelect={onSelect}
-      onMore={onMore}
-      onAdd={onAdd}
-    />
+    <div className="tree">
+      <SubTreeComponent
+        {...props}
+        parent={undefined}
+        level={0}
+        dragging={dragging}
+      />
+    </div>
   );
 };
 

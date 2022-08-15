@@ -15,6 +15,16 @@
     --selected-highlight: var(--dash-light-pink);
     --button-icon-idle: var(--dash-light-grey);
     --button-icon-focused: var(--dash-dark-pink);
+
+    --dash-row-inner-content: 18px;
+    --dash-row-drag-padding: 3px;
+    --dash-row-height: calc(var(--dash-row-inner-content) + (var(--dash-row-drag-padding) * 2));
+
+    --dash-row-height-drag-edge: calc(var(--dash-row-height) /3);
+    --dash-row-height-drag: calc(var(--dash-row-height) /3);
+
+    --background-color: var(--dash-white);
+    --outline-color: var(--dash-dark-pink);
 }
 
 html,

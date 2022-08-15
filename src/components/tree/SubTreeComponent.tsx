@@ -1,42 +1,14 @@
 import { TreeNode } from "../../models/TreeNode";
 import NodeComponent from "./NodeComponent";
 
-const SubTreeComponent: React.FC<SubTreeProps> = ({
-  nodes,
-  parent,
-  level,
-  onExpand,
-  onCollapse,
-  onSelect,
-  onMore,
-  onAdd,
-}: SubTreeProps) => {
-  var levelNodes = nodes.filter((n) => n.parentID === parent?.id);
+const SubTreeComponent: React.FC<SubTreeProps> = (props: SubTreeProps) => {
+  var levelNodes = props.nodes.filter((n) => n.parentID === props.parent?.id);
   const mappedNodes = levelNodes.map((node: TreeNode) => {
     return (
       <div key={`node-div-${node.id}`}>
-        <NodeComponent
-          node={node}
-          nodes={nodes}
-          parent={parent}
-          level={level}
-          onExpand={onExpand}
-          onCollapse={onCollapse}
-          onSelect={onSelect}
-          onMore={onMore}
-          onAdd={onAdd}
-        />
+        <NodeComponent {...props} node={node} />
         {node.expanded && node.hasChildren ? (
-          <SubTreeComponent
-            nodes={nodes}
-            parent={node}
-            level={level + 1}
-            onExpand={onExpand}
-            onCollapse={onCollapse}
-            onSelect={onSelect}
-            onMore={onMore}
-            onAdd={onAdd}
-          />
+          <SubTreeComponent {...props} level={props.level + 1} parent={node} />
         ) : null}
       </div>
     );
@@ -49,6 +21,7 @@ export type SubTreeProps = {
   nodes: TreeNode[];
   parent?: TreeNode;
   level: number;
+  dragging: boolean;
   onExpand?: (node: TreeNode) => void;
   onCollapse?: (node: TreeNode) => void;
   onSelect?: (node: TreeNode) => void;

@@ -1,11 +1,49 @@
-import { TreeNode } from "../../models/TreeNode";
 import styled from "styled-components";
+import { TreeNode } from "../../models/TreeNode";
+import { DragSourceMonitor } from "react-dnd";
+import { useDrag } from "react-dnd";
+import type { Drop } from "./Drop";
+import { DragCollected } from "./DragCollected";
+import { ItemTypes } from "./ItemType";
+import { useTreeNodeDrops } from "./hooks/useTreeNodeDrops";
 
 const NodeComponent: React.FC<NodeProps> = (props: NodeProps) => {
+  const [drop, dropTop, dropBottom, dropInner] = useTreeNodeDrops(props.node);
+  const [collected, drag, dragPreview] = useDrag<
+    TreeNode,
+    TreeNode,
+    DragCollected
+  >(() => ({
+    type: ItemTypes.TREE_NODE,
+    item: { ...props.node },
+    end: (item, monitor) => {
+      const dropResult = monitor.getDropResult<Drop>();
+      if (item && dropResult) {
+        console.log(`${props.node.id} -> ${dropResult.target.id}`);
+      }
+    },
+    collect: (monitor: DragSourceMonitor<TreeNode, Drop>) => {
+      return {
+        isDragging: monitor.isDragging(),
+        getClientOffset: monitor.getClientOffset(),
+      };
+    },
+  }));
+
+  const selectedClass = props.node.selected ? "selected" : "";
+  const draggingClass = drop.length > 0 ? "drag-over" : "";
+  const nodeClass = `${drop} ${draggingClass} ${selectedClass}`;
   return (
-    <NodeStyle node={props.node}>
-      <div className="bar" />
-      <NodePadding level={props.level}>
+    <NodeContainer
+      node={props.node}
+      level={props.level}
+      isDragging={collected.isDragging}
+      ref={drag}
+      className={nodeClass}
+    >
+      <div className="node-bar" />
+      <div className="node-left" />
+      <div className="node-switch">
         <ClickableButtonContainer
           onClick={() => {
             if (props.node.expanded) {
@@ -24,15 +62,20 @@ const NodeComponent: React.FC<NodeProps> = (props: NodeProps) => {
             ) : null}
           </SmallIconContainer>
         </ClickableButtonContainer>
+      </div>
+      <div className="node-inner">
         <ClickableTextContainer
           onClick={() => {
             if (props.onSelect) props.onSelect(props.node);
           }}
         >
-          <TextNode>{props.node.text}</TextNode>
+          {props.node.text}
         </ClickableTextContainer>
-      </NodePadding>
-      <RightActionContainer>
+      </div>
+      <div className="node-right">
+        <SmallIconContainer className="sic">
+          <ClickableButtonContainer>{props.node.id}</ClickableButtonContainer>
+        </SmallIconContainer>
         <ClickableButtonContainer
           onClick={() => {
             if (props.onMore) props.onMore(props.node);
@@ -51,8 +94,31 @@ const NodeComponent: React.FC<NodeProps> = (props: NodeProps) => {
             <span className="e-icons e-plus"></span>
           </SmallIconContainer>
         </ClickableButtonContainer>
-      </RightActionContainer>
-    </NodeStyle>
+      </div>
+      {props.dragging ? (
+        <div className="node-shadow">
+          {(() => {
+            switch (drop) {
+              case "top":
+                return <div className="drag-tip-top"></div>;
+              case "inner":
+                return <div className="drag-tip-inner"></div>;
+              case "bottom":
+                return <div className="drag-tip-bottom"></div>;
+              default:
+                return null;
+            }
+          })()}
+        </div>
+      ) : null}
+      {props.dragging ? (
+        <div className="node-shadow">
+          <div className="node-drag-top" ref={dropTop}></div>
+          <div className="node-drag-inner" ref={dropInner}></div>
+          <div className="node-drag-bottom" ref={dropBottom}></div>
+        </div>
+      ) : null}
+    </NodeContainer>
   );
 };
 
@@ -63,6 +129,7 @@ export type NodeProps = {
   node: TreeNode;
   parent?: TreeNode;
   level: number;
+  dragging: boolean;
   onExpand?: (node: TreeNode) => void;
   onCollapse?: (node: TreeNode) => void;
   onSelect?: (node: TreeNode) => void;
@@ -70,35 +137,117 @@ export type NodeProps = {
   onAdd?: (node: TreeNode) => void;
 };
 
-export type NodePaddingProps = {
-  level: number;
+export type DropResult = {
+  id: string;
 };
 
 export type NodeStyleProps = {
   node: TreeNode;
+  level: number;
+  isDragging: boolean;
 };
 
-const NodeStyle = styled.div<NodeStyleProps>`
-  height: 24px;
-
-  align-items: center;
+const NodeContainer = styled.div<NodeStyleProps>`
   display: flex;
+  flex-direction: row;
+  height: var(--dash-row-height);
+  width: 100%;
+  position: relative;
+  cursor: pointer;
 
-  ${(p) =>
-    p.node.selected === true
-      ? `
-      background-color: var(--selected-highlight);
-      color: var(--button-icon-focused);
-      `
-      : ``}
-
-  &:hover {
-    background-color: purple;
+  &.selected {
+    background-color: var(--selected-highlight);
+    color: var(--button-icon-focused);
   }
 
-  & .bar {
+  /*** node - drag tips - appers as broken or solid lines when dragging over ***/
+  & .drag-tip-top {
+    border-top: 1px solid var(--dash-dark-pink);
+    width: 100%;
+    height: calc(var(--dash-row-height) - 1px);
+  }
+
+  & .drag-tip-bottom {
+    border-bottom: 1px solid var(--dash-dark-pink);
+    width: 100%;
+    height: calc(var(--dash-row-height) - 1px);
+  }
+
+  & .drag-tip-inner {
+    border: 1px dashed var(--dash-dark-pink);
+    width: calc(100% - 2px);
+    height: calc(var(--dash-row-height) - 2px);
+  }
+
+  /*** node shadow element - overlayed on top of node ***/
+  & .node-shadow {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    height: var(--dash-row-height);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /*** drag drop areas ***/
+  & .node-drag-top {
+    width: 100%;
+    height: var(--dash-row-height-drag-edge);
+  }
+
+  & .node-drag-inner {
+    width: 100%;
+    height: var(--dash-row-height-drag);
+  }
+
+  & .node-drag-bottom {
+    width: 100%;
+    height: var(--dash-row-height-drag-edge);
+    // pointer-events: none;
+  }
+
+  /*** drag drop areas - reactions ***/
+  &.drag-over .node-drag-top {
+    background-color: rgba(0, 0, 255, 0.06);
+  }
+
+  &.drag-over .node-drag-bottom {
+    background-color: rgba(0, 0, 255, 0.06);
+  }
+
+  /*** node - left padding ***/
+  & .node-left {
+    width: ${(p) => 20 + p.level * 20}px;
+    max-width: ${(p) => 20 + p.level * 20}px;
+    min-width: ${(p) => 20 + p.level * 20}px;
+  }
+
+  /*** node - innert content ***/
+  & .node-inner {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-grow: 100;
+  }
+
+  /*** node - right content ***/
+  & .node-right {
+    margin-left: auto;
+    display: flex;
+    flex-direction: row;
+  }
+
+  /*** node - hover ***/
+  &:hover {
+    background-color: var(--selected-highlight);
+  }
+
+  /*** node - bar - appears when a node is selected ***/
+  & .node-bar {
     min-width: 3px;
-    height: 24px;
+    max-width: 3px;
+    height: var(--dash-row-height);
 
     ${(p) =>
       p.node.selected === true
@@ -107,37 +256,12 @@ const NodeStyle = styled.div<NodeStyleProps>`
   }
 `;
 
-const NodePadding = styled.div<NodePaddingProps>`
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  padding-left: ${(p) => p.level * 20}px;
-
-  //   background-color: pink;
-  width: 100%;
-`;
-
-const RightActionContainer = styled.div`
-  margin-left: auto;
-  display: flex;
-
-  // background-color: green;
-`;
-
 const ClickableTextContainer = styled.div`
-  height: 24px;
-  // background-color: red;
-
+  height: var(--dash-row-inner-content);
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
   flex-grow: 1;
-
-  cursor: pointer;
-`;
-
-const TextNode = styled.p`
-  // background-color: yellow;
 `;
 
 const SmallIconContainer = styled.div`
@@ -147,12 +271,11 @@ const SmallIconContainer = styled.div`
 `;
 
 const ClickableButtonContainer = styled.div`
-  height: 24px;
-  cursor: pointer;
+  height: var(--dash-row-inner-content);
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  padding-top: 3px;
+  padding-top: 4px;
   color: var(--button-icon-idle);
 
   & .e-icons {
