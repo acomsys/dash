@@ -3,12 +3,12 @@ import { TreeNode } from "../../models/TreeNode";
 import styled from "styled-components";
 import _ from "lodash";
 import { useDashStore } from "../../store/dash-store";
-import { useSpaceService } from "../../services/useSpaceService";
+import { useDirectoryService } from "../../services/useDirectoryService";
 
 const DashboardLayout = ({ children }: React.PropsWithChildren<{}>) => {
   const count = useDashStore((s) => s.count);
-  const spaces = useDashStore((s) => s.dash.spaces);
-  const { push } = useSpaceService();
+  const directories = useDashStore((s) => s.dash.directories);
+  const { push } = useDirectoryService();
   const { increment, decrement } = useDashStore((store) => ({
     increment: store.increment,
     decrement: store.decrement,
@@ -34,9 +34,9 @@ const DashboardLayout = ({ children }: React.PropsWithChildren<{}>) => {
     <StyledDashboard>
       <div className="sb">
         <div className="sb-header">Dash {count}</div>
-        {spaces ? (
+        {directories ? (
           <SidebarAccordionComponent
-            nodes={spaces}
+            nodes={directories}
             onExpand={onExpand}
             onCollapse={onCollapse}
             onSelect={onSelect}

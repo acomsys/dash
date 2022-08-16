@@ -1,7 +1,7 @@
 import { getDashInitialState, useDashStore } from "../store/dash-store";
 import { trpc } from "../utils/trpc";
 
-export const useSpaceService = () => {
+export const useDirectoryService = () => {
     const { dashUpdate, addMessage } = useDashStore((store) => ({
         dashUpdate: store.dashUpdate,
         addMessage: store.addMessage,
@@ -13,7 +13,7 @@ export const useSpaceService = () => {
         }
     });
     
-    const push = trpc.useMutation(["dash.push.space"], {
+    const push = trpc.useMutation(["dash.push.directory"], {
         onSuccess: (data) => {
             dashUpdate(data ?? getDashInitialState());
         },

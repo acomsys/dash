@@ -35,8 +35,8 @@ const SidebarAccordionComponent: React.FC<SidebarAccordionProps> = (props) => {
         <AccordionItemsDirective>
           <AccordionItemDirective header="Favorites" content={favorites} />
           <AccordionItemDirective
-            cssClass="sb-spaces"
-            header="Spaces"
+            cssClass="sb-directories"
+            header="Directories"
             content={projectTree}
             expanded={true}
           />
@@ -72,12 +72,12 @@ const SidebardAccordionStyle = styled.div`
     background: transparent !important;
   }
 
-  & .sb-spaces .node-switches {
+  & .sb-directories .node-switches {
     opacity: 0;
     transition: opacity 0.3s linear;
   }
 
-  & .sb-spaces:hover .node-switches {
+  & .sb-directories:hover .node-switches {
     opacity: 1;
   }
 `;

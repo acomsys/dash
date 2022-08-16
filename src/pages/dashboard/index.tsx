@@ -11,8 +11,8 @@ const Dashboard: NextPageWithLayout = () => {
     <div>
       <span>Hello world</span>
       <button onClick={increment}>Click</button>
-      {dash.spaces.map((space) => {
-        return <div key={space.id}>{space.text}</div>;
+      {dash.directories.map((directory) => {
+        return <div key={directory.id}>{directory.text}</div>;
       })}
     </div>
   );

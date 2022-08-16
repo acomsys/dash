@@ -10,7 +10,7 @@ import { trpc } from '../utils/trpc';
 let store: UseBoundStore<StoreApi<DashStore>>;
 
 export const getDashInitialState = (): Dash => ({
-    spaces: [],
+    directories: [],
 })
 
 export const getDefaultInitialState = () => ({

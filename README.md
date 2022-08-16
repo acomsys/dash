@@ -21,11 +21,11 @@
       // 🙅‍♂️ move this to a component dedicated to displaying counter
       const count = useDashStore((s) => s.count);
 
-      // 🙅‍♂️ move this to a component dedicated to displaying list of spaces
-      const spaces = useDashStore((s) => s.dash.spaces);
+      // 🙅‍♂️ move this to a component dedicated to displaying list of directories
+      const directories = useDashStore((s) => s.dash.directories);
 
       // 👍 actions are fine since they don't change often
-      const { push } = useSpaceService();
+      const { push } = useDirectoryService();
       const { increment, decrement } = useDashStore((store) => ({
          increment: store.increment,
          decrement: store.decrement,

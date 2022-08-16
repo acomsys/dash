@@ -6,7 +6,7 @@ import { createProtectedRouter } from "../protected-router";
 let id = 500;
 
 export const dashRouter = createProtectedRouter()
-    .mutation('push.space', {
+    .mutation('push.directory', {
         input: z
             .object({
                 text: z.string().max(50)
@@ -21,14 +21,14 @@ export const dashRouter = createProtectedRouter()
                 hasChildren: false
             })
             return {
-                spaces: Tree1,
+                directories: Tree1,
             }
         }
     })
     .query("get", {
         resolve({ ctx }): Dash {
             return {
-                spaces: Tree1,
+                directories: Tree1,
             };
         },
     });
