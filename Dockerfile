@@ -12,6 +12,7 @@ COPY package.json ./package.json
 COPY next.config.mjs ./next.config.mjs
 
 # https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --chown=nextjs:nodejs node_modules ./node_modules
 COPY --chown=nextjs:nodejs .next/standalone ./
 COPY --chown=nextjs:nodejs .next/static ./.next/static
 
