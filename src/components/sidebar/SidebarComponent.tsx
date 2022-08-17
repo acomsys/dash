@@ -1,12 +1,6 @@
-import {
-  AccordionComponent,
-  AccordionItemDirective,
-  AccordionItemsDirective,
-} from '@syncfusion/ej2-react-navigations';
 import styled from 'styled-components';
 import { TreeNode } from '../../models/TreeNode';
 import TreeComponent from '../tree/TreeComponent';
-import { SidebarFooterStateful } from './SidebarFooterComponent';
 
 export type SidebarProps = {
   className?: string;
