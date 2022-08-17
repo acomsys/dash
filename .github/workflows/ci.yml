@@ -66,4 +66,4 @@ jobs:
 
       - name: Deploy
         run: |
-          flyctl deploy --local-only
+          flyctl deploy --local-only --detach
