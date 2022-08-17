@@ -27,28 +27,28 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: git clone
+      - name: Clone
         uses: actions/checkout@v3
 
-      - name: setup nodejs
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '18.7.0'
 
-      - name: setup pnpm
+      - name: Setup pnpm
         uses: pnpm/action-setup@v2.2.2
         with:
           version: '7.9.0'
 
-      - name: setup fly.io
+      - name: Setup fly.io
         uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - name: build
+      - name: Build
         run: |
           pnpm install
           pnpm run lint
           pnpm run build
 
-      - name: deploy
+      - name: Deploy
         run: |
           flyctl deploy --local-only
