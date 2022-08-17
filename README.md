@@ -1,3 +1,9 @@
+# Introduction
+
+Dash is a demonstrator project for using trpc, nextjs, and prisma.
+
+A canary deployment is available at [https://dash-canary.acomsys.net](https://dash-canary.acomsys.net).
+
 # Learnings
 
 1. For optimization purposes, always ensure that useStore queries are as atomic as possible.
