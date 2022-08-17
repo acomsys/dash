@@ -25,5 +25,6 @@ jobs:
 
       - name: build
         run: |
+          pnpm install
           pnpm run lint
           pnpm run build
