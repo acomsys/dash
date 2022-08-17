@@ -3,8 +3,6 @@ import { Tree1 } from "../../../mocks/tree/tree1";
 import { Dash } from "../../../models/Dash";
 import { createProtectedRouter } from "../protected-router";
 
-let id = 500;
-
 export const dashRouter = createProtectedRouter()
     .mutation('push.directory', {
         input: z
@@ -13,12 +11,14 @@ export const dashRouter = createProtectedRouter()
             })
             .nullish(),
         resolve(req) {
-            id = id + 1;
+            const id = Tree1.length;
             console.log(id);
             Tree1.push({
                 text: `${req?.input?.text} ${id}` ?? "untitled",
                 id: id,
-                hasChildren: false
+                index: id,
+                hasChildren: false,
+                level: 0,
             })
             return {
                 directories: Tree1,

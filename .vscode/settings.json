@@ -1,0 +1,8 @@
+{
+  "prettier.configPath": ".prettierrc.js",
+  "eslint.alwaysShowStatus": true,
+  "editor.formatOnSave": true,
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  }
+}

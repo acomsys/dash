@@ -25,6 +25,11 @@
 
     --background-color: var(--dash-white);
     --outline-color: var(--dash-dark-pink);
+
+    --dash-sb-footer-height: 53px;
+    --dash-sb-header-height: 50px;
+
+    --dash-sb-content-height: calc(100% - (var(--dash-sb-footer-height) + var(--dash-sb-header-height)));
 }
 
 html,

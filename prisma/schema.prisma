@@ -15,8 +15,41 @@ model Example {
     @@map("example")
 }
 
+model UserWorkspacePermission {
+    userId        String   @map("user_id") @db.VarChar(191)
+    workspaceId   String   @map("workspace_id") @db.VarChar(191)
+    permissionKey String   @map("permission_key") @db.VarChar(191)
+    createdAt     DateTime @default(now()) @map("created_at")
+
+    @@id([userId, workspaceId, permissionKey])
+    @@map("user_workspace_permission")
+}
+
+model UserWorkspace {
+    workspaceId String    @map("workspace_id") @db.VarChar(191)
+    userId      String    @map("user_id") @db.VarChar(191)
+    createdAt   DateTime  @default(now()) @map("created_at")
+    updatedAt   DateTime  @updatedAt @map("updated_at")
+    user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    workspace   Workspace @relation(fields: [workspaceId], references: [workspaceId], onDelete: Cascade)
+
+    @@id([workspaceId, userId])
+    @@map("user_workspace")
+}
+
+model Workspace {
+    workspaceId String   @id @default(cuid()) @map("workspace_id") @db.VarChar(191)
+    name        String   @map("name") @db.VarChar(191)
+    createdAt   DateTime @default(now()) @map("created_at")
+    updatedAt   DateTime @updatedAt @map("updated_at")
+
+    userWorkspaces UserWorkspace[]
+
+    @@map("workspace")
+}
+
 model Account {
-    id                 String  @id @default(cuid())
+    id                 String  @id @default(cuid()) @db.VarChar(191)
     userId             String  @map("user_id") @db.VarChar(191)
     type               String  @db.VarChar(191)
     provider           String  @db.VarChar(191)
@@ -38,7 +71,7 @@ model Account {
 }
 
 model Session {
-    id           String   @id @default(cuid())
+    id           String   @id @default(cuid()) @db.VarChar(191)
     sessionToken String   @unique @map("session_token") @db.VarChar(191)
     expires      DateTime
     userId       String   @map("user_id") @db.VarChar(191)
@@ -48,13 +81,14 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?   @db.VarChar(191)
-    email         String?   @unique @db.VarChar(191)
-    emailVerified DateTime? @map("email_verified")
-    image         String?   @db.VarChar(191)
-    accounts      Account[]
-    sessions      Session[]
+    id             String          @id @default(cuid()) @db.VarChar(191)
+    name           String?         @db.VarChar(191)
+    email          String?         @unique @db.VarChar(191)
+    emailVerified  DateTime?       @map("email_verified")
+    image          String?         @db.VarChar(191)
+    accounts       Account[]
+    sessions       Session[]
+    userWorkspaces UserWorkspace[]
 
     @@map("user")
 }

@@ -1,7 +1,7 @@
-import { TreeNode } from "../../models/TreeNode";
-import { useDragDropManager } from "react-dnd";
-import { useEffect, useState } from "react";
-import SubTreeComponent from "./SubTreeComponent";
+import { TreeNode } from '../../models/TreeNode';
+import { useDragDropManager } from 'react-dnd';
+import { useEffect, useState } from 'react';
+import SubTreeComponent from './SubTreeComponent';
 
 const TreeComponent: React.FC<TreeProps> = (props: TreeProps) => {
   const [dragging, setDragging] = useState(false);
@@ -19,12 +19,7 @@ const TreeComponent: React.FC<TreeProps> = (props: TreeProps) => {
 
   return (
     <div className="tree">
-      <SubTreeComponent
-        {...props}
-        parent={undefined}
-        level={0}
-        dragging={dragging}
-      />
+      <SubTreeComponent {...props} dragging={dragging} />
     </div>
   );
 };

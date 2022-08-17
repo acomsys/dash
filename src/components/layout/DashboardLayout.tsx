@@ -1,9 +1,10 @@
-import SidebarAccordionComponent from "../../components/sidebar/SidebarComponent";
-import { TreeNode } from "../../models/TreeNode";
-import styled from "styled-components";
-import _ from "lodash";
-import { useDashStore } from "../../store/dash-store";
-import { useDirectoryService } from "../../services/useDirectoryService";
+import { TreeNode } from '../../models/TreeNode';
+import { useDashStore } from '../../store/dash-store';
+import { useDirectoryService } from '../../services/useDirectoryService';
+import { SidebarFooterStateful } from '../sidebar/SidebarFooterComponent';
+import SidebarComponent from '../../components/sidebar/SidebarComponent';
+import _ from 'lodash';
+import styled from 'styled-components';
 
 const DashboardLayout = ({ children }: React.PropsWithChildren<{}>) => {
   const count = useDashStore((s) => s.count);
@@ -24,7 +25,7 @@ const DashboardLayout = ({ children }: React.PropsWithChildren<{}>) => {
     decrement();
   };
   const onAdd = (node: TreeNode) => {
-    push.mutate({ text: "some" });
+    push.mutate({ text: 'some' });
   };
   const onCollapse = (node: TreeNode) => {
     decrement();
@@ -34,20 +35,18 @@ const DashboardLayout = ({ children }: React.PropsWithChildren<{}>) => {
     <StyledDashboard>
       <div className="sb">
         <div className="sb-header">Dash {count}</div>
-        {directories ? (
-          <SidebarAccordionComponent
-            nodes={directories}
-            onExpand={onExpand}
-            onCollapse={onCollapse}
-            onSelect={onSelect}
-            onMore={onMore}
-            onAdd={onAdd}
-          />
-        ) : null}
+        <SidebarComponent
+          className="sb-body"
+          nodes={directories}
+          onExpand={onExpand}
+          onCollapse={onCollapse}
+          onSelect={onSelect}
+          onMore={onMore}
+          onAdd={onAdd}
+        />
+        <SidebarFooterStateful className="sb-footer" />
       </div>
-      <div className="content">
-        <main>{children}</main>
-      </div>
+      <div className="content">{children}</div>
     </StyledDashboard>
   );
 };
@@ -56,26 +55,33 @@ const StyledDashboard = styled.div`
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
-  align-items: stretch;
   height: 100%;
   width: 100%;
 
   & .sb {
-    flex-grow: 0;
     width: 299px;
     border-right: 1px solid #e9ebf0;
-    // background-color: green;
+    /* background-color: green; */
+    display: block;
+  }
+
+  & .sb-body {
+    height: var(--dash-sb-content-height);
+    min-height: var(--dash-sb-content-height);
+    max-height: var(--dash-sb-content-height);
+    overflow-y: scroll;
   }
 
   & .sb-header {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    height: var(--dash-sb-header-height);
     text-align: center;
   }
 
   & .content {
-    flex-grow: 8;
-    // background-color: orange;
+    flex-grow: 100;
+
+    /* background-color: orange; */
+    overflow-y: scroll;
   }
 
   & .e-acrdn-header-content {

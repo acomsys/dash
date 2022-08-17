@@ -1,11 +1,11 @@
-import styled from "styled-components";
-import { TreeNode } from "../../models/TreeNode";
-import { DragSourceMonitor } from "react-dnd";
-import { useDrag } from "react-dnd";
-import type { Drop } from "./Drop";
-import { DragCollected } from "./DragCollected";
-import { ItemTypes } from "./ItemType";
-import { useTreeNodeDrops } from "./hooks/useTreeNodeDrops";
+import styled from 'styled-components';
+import { TreeNode } from '../../models/TreeNode';
+import { DragSourceMonitor } from 'react-dnd';
+import { useDrag } from 'react-dnd';
+import type { Drop } from './Drop';
+import { DragCollected } from './DragCollected';
+import { ItemTypes } from './ItemType';
+import { useTreeNodeDrops } from './hooks/useTreeNodeDrops';
 
 const NodeComponent: React.FC<NodeProps> = (props: NodeProps) => {
   const [drop, dropTop, dropBottom, dropInner] = useTreeNodeDrops(props.node);
@@ -30,13 +30,13 @@ const NodeComponent: React.FC<NodeProps> = (props: NodeProps) => {
     },
   }));
 
-  const selectedClass = props.node.selected ? "selected" : "";
-  const draggingClass = drop.length > 0 ? "drag-over" : "";
+  const selectedClass = props.node.selected ? 'selected' : '';
+  const draggingClass = drop.length > 0 ? 'drag-over' : '';
   const nodeClass = `${drop} ${draggingClass} ${selectedClass}`;
   return (
     <NodeContainer
       node={props.node}
-      level={props.level}
+      level={props.node.level}
       isDragging={collected.isDragging}
       ref={drag}
       className={nodeClass}
@@ -96,26 +96,26 @@ const NodeComponent: React.FC<NodeProps> = (props: NodeProps) => {
         </ClickableButtonContainer>
       </div>
       {props.dragging ? (
-        <div className="node-shadow">
-          {(() => {
-            switch (drop) {
-              case "top":
-                return <div className="drag-tip-top"></div>;
-              case "inner":
-                return <div className="drag-tip-inner"></div>;
-              case "bottom":
-                return <div className="drag-tip-bottom"></div>;
-              default:
-                return null;
-            }
-          })()}
-        </div>
-      ) : null}
-      {props.dragging ? (
-        <div className="node-shadow">
-          <div className="node-drag-top" ref={dropTop}></div>
-          <div className="node-drag-inner" ref={dropInner}></div>
-          <div className="node-drag-bottom" ref={dropBottom}></div>
+        <div>
+          <div className="node-shadow">
+            {(() => {
+              switch (drop) {
+                case 'top':
+                  return <div className="drag-tip-top"></div>;
+                case 'inner':
+                  return <div className="drag-tip-inner"></div>;
+                case 'bottom':
+                  return <div className="drag-tip-bottom"></div>;
+                default:
+                  return null;
+              }
+            })()}
+          </div>
+          <div className="node-shadow">
+            <div className="node-drag-top" ref={dropTop}></div>
+            <div className="node-drag-inner" ref={dropInner}></div>
+            <div className="node-drag-bottom" ref={dropBottom}></div>
+          </div>
         </div>
       ) : null}
     </NodeContainer>
@@ -127,8 +127,6 @@ export default NodeComponent;
 export type NodeProps = {
   nodes: TreeNode[];
   node: TreeNode;
-  parent?: TreeNode;
-  level: number;
   dragging: boolean;
   onExpand?: (node: TreeNode) => void;
   onCollapse?: (node: TreeNode) => void;
@@ -218,9 +216,9 @@ const NodeContainer = styled.div<NodeStyleProps>`
 
   /*** node - left padding ***/
   & .node-left {
-    width: ${(p) => 20 + p.level * 20}px;
-    max-width: ${(p) => 20 + p.level * 20}px;
-    min-width: ${(p) => 20 + p.level * 20}px;
+    width: ${(p) => p.level * 20}px;
+    max-width: ${(p) => p.level * 20}px;
+    min-width: ${(p) => p.level * 20}px;
   }
 
   /*** node - innert content ***/
@@ -284,9 +282,5 @@ const ClickableButtonContainer = styled.div`
 
   &:hover .e-icons {
     color: var(--button-icon-focused);
-  }
-
-  &:hover .sic {
-    transform: scale(1.3);
   }
 `;

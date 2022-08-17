@@ -2,12 +2,14 @@ import {
   AccordionComponent,
   AccordionItemDirective,
   AccordionItemsDirective,
-} from "@syncfusion/ej2-react-navigations";
-import styled from "styled-components";
-import { TreeNode } from "../../models/TreeNode";
-import TreeComponent from "../tree/TreeComponent";
+} from '@syncfusion/ej2-react-navigations';
+import styled from 'styled-components';
+import { TreeNode } from '../../models/TreeNode';
+import TreeComponent from '../tree/TreeComponent';
+import { SidebarFooterStateful } from './SidebarFooterComponent';
 
-export type SidebarAccordionProps = {
+export type SidebarProps = {
+  className?: string;
   nodes: TreeNode[];
   parent?: TreeNode;
   onExpand?: (node: TreeNode) => void;
@@ -26,31 +28,23 @@ const favorites = () => (
   </div>
 );
 
-const SidebarAccordionComponent: React.FC<SidebarAccordionProps> = (props) => {
-  const projectTree = () => <TreeComponent {...props} />;
+const SidebarComponent: React.FC<SidebarProps> = (props) => {
+  // const projectTree = () => <TreeComponent {...props} />;
 
   return (
-    <SidebardAccordionStyle>
-      <AccordionComponent>
-        <AccordionItemsDirective>
-          <AccordionItemDirective header="Favorites" content={favorites} />
-          <AccordionItemDirective
-            cssClass="sb-directories"
-            header="Directories"
-            content={projectTree}
-            expanded={true}
-          />
-          <AccordionItemDirective header="Dashboards" content={favorites} />
-          <AccordionItemDirective header="Docs" content={favorites} />
-        </AccordionItemsDirective>
-      </AccordionComponent>
-    </SidebardAccordionStyle>
+    <SidebarStyle className={props.className}>
+      <TreeComponent {...props} />
+    </SidebarStyle>
   );
 };
 
-export default SidebarAccordionComponent;
+export default SidebarComponent;
 
-const SidebardAccordionStyle = styled.div`
+const SidebarStyle = styled.div`
+  & .sb-accordion {
+    height: calc(100% - var(--dash-sb-footer-height));
+  }
+
   & .header {
   }
 
