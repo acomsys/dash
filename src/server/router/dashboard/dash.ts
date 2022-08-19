@@ -1,3 +1,4 @@
+import { hello } from "@acomsys/dash-utils";
 import { z } from "zod";
 import { Tree1 } from "../../../mocks/tree/tree1";
 import { Dash } from "../../../models/Dash";
@@ -22,6 +23,7 @@ export const dashRouter = createProtectedRouter()
             })
             return {
                 directories: Tree1,
+                message: hello("df"),
             }
         }
     })
@@ -29,6 +31,7 @@ export const dashRouter = createProtectedRouter()
         resolve({ ctx }): Dash {
             return {
                 directories: Tree1,
+                message: hello("df"),
             };
         },
     });
