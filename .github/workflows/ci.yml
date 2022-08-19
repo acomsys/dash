@@ -2,9 +2,13 @@ name: CI
 
 on:
   push:
-    branches: ['main']
+    branches:
+      - 'main'
+      - 'experimental/*'
   pull_request:
-    branches: ['main']
+    branches:
+      - 'main'
+      - 'experimental/*'
 
 env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
