@@ -42,3 +42,6 @@ yarn-error.log*
 
 # prisma
 prisma/migrations
+
+# vitest
+__snapshots__

@@ -3,3 +3,6 @@ Dockerfile
 npm-debug.log
 README.md
 .git
+
+# Vitest
+__snapshots__
